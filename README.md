@@ -68,7 +68,7 @@ rootDir
 ```
 
 
-###Versions of docker images 
+### Versions of docker images 
 
 Find proper version is possible on image official hub website
 
@@ -83,7 +83,7 @@ you can go to https://hub.docker.com/_/php/ and find the proper version
 with a suffix "-fpm" at the end
 
 
-###Additional possibility
+### Additional possibility
 
 This tool generates env-variables.env files for each container and you can set some 
 environment variables which provide by official containers, the list of available variables also can be found 
@@ -104,15 +104,15 @@ After successful building run
 If no errors occur you can open http://yourhost in a browser
             and be able to see an output of phpinfo()
             
-###Trivial tasks
+### Trivial tasks
 CONTAINER - it's container name 
 
 All commands you can run from host machine :
-####Composer
+#### Composer
 Composer available inside PHP container
 
 ``docker exec -it CONTAINER composer update``
 
-####Import Database
+#### Import Database
 
 ``cat backup.sql | docker exec -i CONTAINER /usr/bin/mysql -u root --password=root DATABASE``
