@@ -1,0 +1,20 @@
+{
+  "name": "bxn5/dockerPHPBuilder",
+  "version": "0.0.1",
+  "description": "Build docker project from scratch",
+  "require": {
+    "symfony/console": "^4.1",
+    "symfony/config": "^4.1",
+    "symfony/yaml": "^4.1",
+    "symfony/filesystem": "^4.1"
+
+  },
+  "require-dev": {
+  },
+  "autoload": {
+    "psr-4": {
+      "ECG\\DockerBuilder\\": "/src",
+      "ECG\\DockerBuilder\\Tests\\": "Tests/"
+    }
+  }
+}
