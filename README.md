@@ -21,9 +21,7 @@ composer
 
 Clone project 
 
-```
-Give the example
-```
+
 
 And install all dependencies
 
