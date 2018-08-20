@@ -149,9 +149,11 @@ class DefaultCommand extends Command
         try {
             $this->fileProcessor->createStructure($input->getArgument('projectRootFolder'));
             $this->fileProcessor->convertToYamlFile($this->composeTemplate->getComposeTemplate($input));
+            
             $this->createNginxFiles($input);
             $this->createPhpFiles($input);
             $this->createMysqlFiles($input);
+            
             $output->writeln('--------');
             $output->writeln('--------');
             $output->writeln('<fg=green>SUCCESS</>');
