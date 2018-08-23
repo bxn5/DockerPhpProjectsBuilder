@@ -13,7 +13,7 @@
   },
   "autoload": {
     "psr-4": {
-      "ECG\\DockerBuilder\\": "/src",
+      "ECG\\DockerBuilder\\": "src/",
       "ECG\\DockerBuilder\\Tests\\": "Tests/"
     }
   }
