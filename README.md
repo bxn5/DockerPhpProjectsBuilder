@@ -47,6 +47,7 @@ rootDir
     -- php
         --configs
             env-variables.env
+            custom.ini
         --logs
         Dockerfile
     -- nginx
