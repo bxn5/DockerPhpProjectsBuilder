@@ -57,6 +57,7 @@ class FilesProcessor
         $this->fileSystem->mkdir($this->rootDirName.'/mysql/logs', 0755);
         $this->fileSystem->mkdir($this->rootDirName.'/sourceCode', 0755);
         $this->fileSystem->dumpFile($this->rootDirName.'/sourceCode/index.php', '<?php phpinfo(); ?>');
+        $this->fileSystem->dumpFile($this->rootDirName.'/php/configs/custom.ini', 'max_execution_time = "30000"');
         
     }
     
