@@ -28,6 +28,7 @@ class ComposeTemplates
           'volumes' =>
               array (
                   'db-data' => NULL,
+                  'redis-data' => NULL
               ),
             'services' => array (
                 strtolower ($input->getArgument('php_container_name')).'-php' =>
@@ -60,7 +61,7 @@ class ComposeTemplates
                         array (
                             'env_file' =>
                                 array (
-                                    0 => "./nginx/configs/env-variables.env",
+                                    "./nginx/configs/env-variables.env",
                                 ),
                             'command' =>
                                 array (
@@ -71,7 +72,7 @@ class ComposeTemplates
                             'build' => "./nginx",
                             'volumes' =>
                                 array (
-                                    0 => './sourceCode:/var/www/html',
+                                    './sourceCode:/var/www/html',
                                     './nginx/logs:/var/log/nginx'
                                 ),
                             'ports' =>
@@ -79,7 +80,24 @@ class ComposeTemplates
                                     0 => $input->getOption('nginx_port').':80',
                                 ),
                         ),
+                'redis' =>
+                    array (
+                        'command' =>
+                            array (
+                                0 => 'redis-server',
+                                1 => '--appendonly',
+                                2 => 'yes',
+                            ),
+                        'build' => "./redis",
+                        'volumes' =>
+                            array (
+                                0 => 'redis-data:/data',
+                            ),
+                        'hostname' => 'redis'
+                    ),
                 ),
+
+
           
         );
      

@@ -20,27 +20,32 @@ class DefaultCommand extends Command
      * @var FilesProcessor
      */
     private $fileProcessor;
-    
+
     /**
      * @var Templates\ComposeTemplates
      */
     private $composeTemplate;
-    
+
     /**
      * @var Templates\NginxTemplates
      */
     private $nginxTemplate;
-    
+
     /**
      * @var Templates\PhpTemplates
      */
     private $phpTemplate;
-    
+
     /**
      * @var Templates\MysqlTemplates
      */
     private $mysqlTemplate;
-    
+
+    /**
+     * @var Templates\RedisTemplates
+     */
+    private $redisTemplate;
+
     /**
      * DefaultCommand constructor.
      * @param null $name
@@ -52,10 +57,11 @@ class DefaultCommand extends Command
         $this->nginxTemplate = new Templates\NginxTemplates();
         $this->phpTemplate = new Templates\PhpTemplates();
         $this->mysqlTemplate = new Templates\MysqlTemplates();
-        
+        $this->redisTemplate = new Templates\RedisTemplates();
+
         parent::__construct($name);
     }
-    
+
     /**
      * configure console commands
      */
@@ -68,7 +74,7 @@ class DefaultCommand extends Command
             // the full command description shown when running the command with
             // the "--help" option
             ->setHelp('This command allows you to generate a docker project');
-        
+
         $this->addArgument('projectRootFolder', InputArgument::REQUIRED, 'Your project root folder')
             ->addOption(
                 'folder',
@@ -76,14 +82,14 @@ class DefaultCommand extends Command
                 InputOption::VALUE_REQUIRED,
                 'Folder where project will be generated'
             );
-        
+
         $this->addArgument('nginx_container_name', InputArgument::REQUIRED, 'Just name of nginx container')
             ->addOption(
                 'nginx_port',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'expose nginx port'
-                
+
             )
             ->addOption(
                 'nginx_host',
@@ -91,7 +97,7 @@ class DefaultCommand extends Command
                 InputOption::VALUE_REQUIRED,
                 'host name fro nginx config'
             );
-        
+
         $this->addArgument('php_container_name', InputArgument::REQUIRED, 'just php container name')
             ->addOption(
                 'php_version',
@@ -106,7 +112,7 @@ class DefaultCommand extends Command
                 'enable xdebug, enabled by default',
                 true
             );;
-        
+
         $this->addArgument('mysql_container_name', InputArgument::REQUIRED, 'just mysql container name')
             ->addOption(
                 'mariadb_version',
@@ -134,9 +140,23 @@ class DefaultCommand extends Command
                 null,
                 InputOption::VALUE_REQUIRED,
                 'database');
-        
+        $this->addArgument('optional', InputArgument::OPTIONAL, 'optional arguments')
+            ->addOption(
+                'redis_enabled',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'add redis to the project',
+                true)
+            ->addOption(
+                'redis_version',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'redis version from available in hub, latest by default',
+                'latest'
+            );
+
     }
-    
+
     /**
      * execute command
      * @param InputInterface $input
@@ -145,20 +165,24 @@ class DefaultCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        
+
         try {
             $this->fileProcessor->createStructure($input->getArgument('projectRootFolder'));
             $this->fileProcessor->convertToYamlFile($this->composeTemplate->getComposeTemplate($input));
-            
+
             $this->createNginxFiles($input);
             $this->createPhpFiles($input);
             $this->createMysqlFiles($input);
-            
-            $output->writeln('--------');
+            if ($input->getOption('redis_enabled') != false)
+            {
+                $this->createRedisFiles($input);
+            }
+
+                $output->writeln('---------------');
             $output->writeln('--------');
             $output->writeln('<fg=green>SUCCESS</>');
             $output->writeln('--------');
-            $output->writeln('--------');
+            $output->writeln('-------------------');
             $output->writeln("Do not forget to add new host: <comment>{$input->getOption('nginx_host')}</comment> to your hosts file ");
             $output->writeln("After adding the host, you can run you container,
            <comment> cd {$input->getArgument('projectRootFolder')}</comment> to the directory with project
@@ -169,9 +193,9 @@ class DefaultCommand extends Command
             $output->writeln("<error>{$e->getMessage()}</error>");
             $this->fileProcessor->deleteRootFolder();
         }
-        
+
     }
-    
+
     /**
      * create files for nginx container
      * @param InputInterface $input
@@ -185,10 +209,10 @@ class DefaultCommand extends Command
         $this->fileProcessor->saveFile('nginx/configs/nginx.conf', $nginxConf);
         $dockerFileContent = $this->nginxTemplate->getDockerFileTemplate();
         $this->fileProcessor->saveFile('nginx/Dockerfile', $dockerFileContent);
-        
-        
+
+
     }
-    
+
     /**
      * create files for php container
      * @param InputInterface $input
@@ -199,9 +223,9 @@ class DefaultCommand extends Command
         $this->fileProcessor->saveFile('php/configs/env-variables.env', $envTemplate);
         $dockerFileContent = $this->phpTemplate->getDockerFileTemplate($input);
         $this->fileProcessor->saveFile('php/Dockerfile', $dockerFileContent);
-        
+
     }
-    
+
     /**
      * create file for mysql container
      * @param InputInterface $input
@@ -214,5 +238,11 @@ class DefaultCommand extends Command
         $dockerFileContent = $this->mysqlTemplate->getDockerFileTemplate($input);
         $this->fileProcessor->saveFile('mysql/Dockerfile', $dockerFileContent);
     }
-    
+
+    private function createRedisFiles(InputInterface $input)
+    {
+        $dockerFileContent = $this->redisTemplate->getDockerFileTemplate($input);
+        $this->fileProcessor->saveFile('redis/Dockerfile', $dockerFileContent);
+    }
+
 }
