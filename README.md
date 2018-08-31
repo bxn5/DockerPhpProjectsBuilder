@@ -61,6 +61,9 @@ rootDir
             env-variables.env
         --logs
         Dockerfile
+    -- redis
+        --configs
+        Dockerfile
     docker-compose.yaml
     -- sourceCode
         index.php
