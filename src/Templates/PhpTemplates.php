@@ -5,6 +5,7 @@ namespace ECG\DockerBuilder\Templates;
 
 use ECG\DockerBuilder\Templates\PhpDockerFile\Parts\FromPart;
 use ECG\DockerBuilder\Templates\PhpDockerFile\Parts\ComposerPart;
+use ECG\DockerBuilder\Templates\PhpDockerFile\Parts\ModulesPart;
 use ECG\DockerBuilder\Templates\PhpDockerFile\Parts\XdebugPart;
 use ECG\DockerBuilder\Templates\PhpDockerFile\PhpDockerFileBuilder;
 use Symfony\Component\Console\Input\InputInterface;
@@ -42,6 +43,7 @@ PHP_IDE_CONFIG=serverName={$input->getOption('nginx_host')}";
         $dockerFileBuilder = new PhpDockerFileBuilder($input);
         $dockerFileBuilder->addPart(new FromPart());
         $dockerFileBuilder->addPart(new ComposerPart());
+        $dockerFileBuilder->addPart(new ModulesPart());
         $dockerFileBuilder->addPart(new XdebugPart());
         $dockerFileBuilder->addPart(new ConfigsPart());
         return $dockerFileBuilder->build();
