@@ -115,3 +115,11 @@ Composer available inside PHP container
 #### Import Database
 
 ``cat backup.sql | docker exec -i CONTAINER /usr/bin/mysql -u root --password=root DATABASE``
+
+### Magento 2
+
+For Magento 2 environment, after cloning, you need checkout to the branch magento2
+
+``git checkout magento2 ``
+
+
